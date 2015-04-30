@@ -1,0 +1,17 @@
+for delta = -20:20
+    p = delta*pi/180;
+    g = @(x) solve(x,p);
+    options = optimoptions('fsolve','Display','off','MaxFunEvals',1000);        % Turn off display
+    f = fsolve(g,[p+0.0873;-0.6;delta*100 + 1500],options);
+    h = fsolve(g,[p-0.0873;0.6;-delta*100 + 1500],options);
+    i = fsolve(g,[0;2.2*p;delta*20*sign(delta)],options);
+    f(1) = f(1)*180/pi;
+    h(1) = h(1)*180/pi;
+    i(1) = i(1)*180/pi;
+    plot(delta,f(2),'o')
+    hold on;
+    plot(delta,h(2),'^')
+    hold on;
+    plot(delta,i(2),'.')
+    hold on;
+end;
