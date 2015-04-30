@@ -1,0 +1,17 @@
+function car(x,y,zi)
+xlow = x - 1.7*cos(zi);
+xup = x + 1.7*cos(zi);
+ylow = y - 1.7*sin(zi);
+yup = y + 1.7*sin(zi);
+a = [xlow  xlow-0.5*sin(zi) xup - 0.5*sin(zi) xup xup + 0.5*sin(zi) xlow + 0.5*sin(zi) xlow];
+b = [ylow ylow + 0.5*cos(zi) yup + 0.5*cos(zi) yup yup - 0.5*cos(zi) ylow - 0.5*cos(zi) ylow];
+figure(1);
+plot(x,y,'r.','MarkerSize',20)
+hold on;
+plot([xlow xup],[ylow yup],'r-')
+hold on;
+plot([a],[b],'b-')
+hold on;
+plot(a(:,4),b(:,4),'g.','MarkerSize',20)
+hold on;
+axis([-50 50 -50 50]);
