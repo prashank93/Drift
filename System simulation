@@ -1,6 +1,7 @@
 function dx = hi2(t,x,A,B,K,eqbpts,dist,i,C)
 dx = zeros(6,1);
 
+%Algorithm for a trajectory drift
 %{
 p = trapz(t,x(1));
 if p == dist(i,1)
