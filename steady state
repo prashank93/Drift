@@ -1,0 +1,37 @@
+function F = stdst(r)
+F = zeros(3,1);
+g = 9.81;
+m = 1450;
+Iz = 2741.9;
+lf = 1.1;
+lr = 1.59;
+h = 0.4;
+B = 7;
+C = 1.6;
+D = 1.0;
+
+% Computation of rear axle steady state variables
+fry = m*r(1)*r(3)*cos(r(2))*lf/(lf+lr);                             %lateral force
+frz = ((m*g*lf) - (m*h*r(1)*r(3)*sin(r(2))))/(lf + lr);             %normal force at rear
+ffz = ((m*g*lr) + (m*h*r(1)*r(3)*sin(r(2))))/(lf + lr);             %normal force at front
+mury = fry/frz;                                                     %lateral coefficent of friction at rear tire
+tanalphar = (r(1)*sin(r(2)) - r(3)*lr)/(r(1)*cos(r(2)));
+h = @(y) fun(y,tanalphar,mury);
+options = optimoptions('fsolve','Display','off','MaxFunEvals',1000);        % Turn off display
+c = fsolve(h,[0.14;0.1;0.1],options);                                       % returns sR, sRx anfd sRy
+mur = D*sin(C*atan(B*c(1)));
+murx = -c(2)*mur/c(1);
+frx = murx*frz;
+
+% Computation of front axle steady state variables
+ff = sqrt((m*r(1)*r(3))^2 + frx^2 + fry^2 + 2*m*r(1)*r(3)*(frx*sin(r(2)) - fry*cos(r(2)))); %total friction force at front wheel
+muf = ff/ffz;                                                                               %coefficient of friction at front wheel
+sf = tan(asin(muf/D)/C)/B;                                                                  %slip ratio at front wheel
+g = @(y) fun2(y,r,sf,frx,ff);
+options = optimoptions('fsolve','Display','off','MaxFunEvals',1000);                        %Turn off display
+d = fsolve(g,[1;1;r(2)],options);                                                      %returns sfx, sfy and d
+ffx = -d(1)*ffz*D*sin(C*atan(B*sf))/sf;
+ffy = -d(2)*ffz*D*sin(C*atan(B*sf))/sf;
+F(1) = d(1);
+F(2) = c(2);
+F(3) = d(3);
